@@ -2,7 +2,7 @@ import multer from "multer";
 import path from "path";
 
 // Configure storage
-const storage = multer.diskStorage({
+const storage = multer.memoryStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/') // Make sure this directory exists
     },
