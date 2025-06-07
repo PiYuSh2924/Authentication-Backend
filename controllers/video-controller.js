@@ -10,7 +10,7 @@ export const uploadVideoController = async (req, res) => {
       });
     }
 
-    const { url, publicId } = await uploadToCloudinary(req.file.path);
+    const { url, publicId } = await uploadToCloudinary(req.file, 'video');
 
     const newlyUploadedVideo = new Video({
       title: req.body.title || req.file.originalname,

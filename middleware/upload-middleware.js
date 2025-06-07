@@ -1,15 +1,4 @@
 import multer from "multer";
-import path from "path";
-
-// Configure storage
-const storage = multer.memoryStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/') // Make sure this directory exists
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname))
-    }
-});
 
 // Define allowed file types
 const allowedTypes = {
@@ -41,7 +30,7 @@ const createUploadMiddleware = (resourceType = 'image') => {
     const { maxSize } = allowedTypes[resourceType];
     
     return multer({
-        storage: storage,
+        storage: multer.memoryStorage(),
         fileFilter: createFileFilter(resourceType),
         limits: {
             fileSize: maxSize

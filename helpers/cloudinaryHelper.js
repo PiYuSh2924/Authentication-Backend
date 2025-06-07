@@ -1,7 +1,12 @@
 import cloudinary from "../config/cloudinary.js";
+import { Readable } from 'stream';
+import streamifier from 'streamifier';
 
-export const uploadToCloudinary = async (filePath, resourceType = 'image') => {
+export const uploadToCloudinary = async (file, resourceType = 'image') => {
   try {
+    // Create a readable stream from the buffer
+    const stream = streamifier.createReadStream(file.buffer);
+
     // For videos, we need to explicitly set resource_type and other options
     const options = {
       resource_type: "auto", // Let Cloudinary auto-detect the resource type
@@ -13,7 +18,20 @@ export const uploadToCloudinary = async (filePath, resourceType = 'image') => {
     };
 
     console.log("Uploading to Cloudinary with options:", options);
-    const result = await cloudinary.uploader.upload(filePath, options);
+    
+    // Upload using stream
+    const result = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        options,
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+
+      stream.pipe(uploadStream);
+    });
+
     console.log("Cloudinary upload result:", result);
 
     return {

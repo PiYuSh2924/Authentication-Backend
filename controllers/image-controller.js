@@ -11,7 +11,7 @@ export const uploadImageController = async (req, res) => {
       });
     }
 
-    const { url, publicId } = await uploadToCloudinary(req.file.path);
+    const { url, publicId } = await uploadToCloudinary(req.file, 'image');
 
     const newlyUploadedImage = new Image({
       url,
@@ -23,7 +23,7 @@ export const uploadImageController = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Imaged uploaded successfully",
+      message: "Image uploaded successfully",
       image: newlyUploadedImage,
     });
   } catch (error) {
